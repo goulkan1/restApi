@@ -32,3 +32,18 @@ exports.tampilDataid = function(req,res) {
     })
     
 }
+
+exports.tambahMahasiswa = function(req,res) {
+    var id = req.params.id;
+    var nim = req.params.nim;
+    var nama = req.params.nama;
+    connection.query('INSERT INTO  mahasiswa (id,nim,nama) VALUES (?,?,?)', [id,nim,nama],  
+    function(error, rows, fileds) {
+        if (error) {
+            console.log(error);
+        }else {
+            respone.ok("tambah data",res)
+        }
+    })
+    
+}
