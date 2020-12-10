@@ -19,3 +19,16 @@ exports.tampilData = function(req,res) {
     })
     
 }
+
+exports.tampilDataid = function(req,res) {
+    let id = req.params.id;
+    connection.query('SELECT * FROM mahasiswa where id = ?', [id],  
+    function(error, rows, fileds) {
+        if (error) {
+            console.log(error);
+        }else {
+            respone.ok(rows,res)
+        }
+    })
+    
+}
