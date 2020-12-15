@@ -48,9 +48,9 @@ exports.login = function (req, res) {
     email: req.body.email,
   };
 
-  let query = "SELECT * FROM ?? WHERE ??=? AND ??=?";
+  let query = "SELECT * FROM  ?? WHERE ??=? AND ??=?";
   let table = ["user", "password", md5(post.password), "email", post.email];
-  query = mysql.format(query.table);
+  query = mysql.format(query, table);
 
   connection.query(query, function (error, rows) {
     if (error) {
@@ -69,7 +69,7 @@ exports.login = function (req, res) {
         idUser = rows[0].id;
         let data = {
           idUser: idUser,
-          accessToken: token,
+          acessToken: token,
           ipAddress: ip.address(),
         };
 
@@ -90,7 +90,10 @@ exports.login = function (req, res) {
           }
         });
       } else {
-        res.json({ errror: true, message: "email dan pass salah" });
+        res.json({
+          errror: true,
+          message: "email dan pass salah",
+        });
       }
     }
   });
