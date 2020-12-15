@@ -5,6 +5,7 @@ var response = require("../res");
 var jwt = require("jsonwebtoken");
 var config = require("../config/secret");
 var ip = require("ip");
+const conn = require("../koneksi");
 
 exports.regis = function (req, res) {
   var post = {
@@ -17,7 +18,6 @@ exports.regis = function (req, res) {
 
   var query = "SELECT email FROM ?? WHERE ?? = ?";
   var table = ["user", "email", post.email];
-
   query = mysql.format(query, table);
 
   connection.query(query, function (error, rows) {
@@ -37,6 +37,60 @@ exports.regis = function (req, res) {
         });
       } else {
         response.ok("sudah terdaftar", res);
+      }
+    }
+  });
+};
+
+exports.login = function (req, res) {
+  let post = {
+    password: req.body.password,
+    email: req.body.email,
+  };
+
+  let query = "SELECT * FROM ?? WHERE ??=? AND ??=?";
+  let table = ["user", "password", md5(post.password), "email", post.email];
+  query = mysql.format(query.table);
+
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      if (rows.length == 1) {
+        let token = jwt.sign(
+          {
+            rows,
+          },
+          config.secret,
+          {
+            expiresIn: 1440,
+          }
+        );
+        idUser = rows[0].id;
+        let data = {
+          idUser: idUser,
+          accessToken: token,
+          ipAddress: ip.address(),
+        };
+
+        let query = "INSERT INTO ?? SET ?";
+        let table = ["aksestoken"];
+        query = mysql.format(query, table);
+
+        connection.query(query, data, function (error, rows) {
+          if (error) {
+            console.log(error);
+          } else {
+            res.json({
+              success: true,
+              message: "token generate",
+              token: token,
+              currUser: data.idUser,
+            });
+          }
+        });
+      } else {
+        res.json({ errror: true, message: "email dan pass salah" });
       }
     }
   });
