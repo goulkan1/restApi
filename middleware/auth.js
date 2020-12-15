@@ -98,3 +98,7 @@ exports.login = function (req, res) {
     }
   });
 };
+
+exports.halamanRahasisa = function (req, res) {
+  response.ok("hal role 2", res);
+};
