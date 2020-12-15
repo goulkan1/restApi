@@ -9,4 +9,7 @@ module.exports = function (app) {
   app.route("/tampil/:nim").get(jsonku.tampilDataid);
 
   app.route("/tambah").post(jsonku.tambahMahasiswa);
+
+  app.route("/ubah").put(jsonku.ubahMahasiswa);
+  app.route("/tampilmatakuliah").get(jsonku.tampilGroupmat);
 };

@@ -34,17 +34,49 @@ exports.tampilDataid = function (req, res) {
 };
 
 exports.tambahMahasiswa = function (req, res) {
+  var id = req.body.id;
   var nim = req.body.nim;
   var nama = req.body.nama;
   var jurusan = req.body.jurusan;
   connection.query(
-    "INSERT INTO mahasiswa (nim,nama,jurusan) VALUES(?,?,?)",
-    [nim, nama, jurusan],
+    "INSERT INTO mahasiswa (id,nim,nama,jurusan) VALUES(?,?,?,?)",
+    [id, nim, nama, jurusan],
     function (error, rows, fileds) {
       if (error) {
         console.log(error);
       } else {
         respone.ok("tambah data", res);
+      }
+    }
+  );
+};
+
+exports.ubahMahasiswa = function (req, res) {
+  var id = req.body.id;
+  var nim = req.body.nim;
+  var nama = req.body.nama;
+  var jurusan = req.body.jurusan;
+  connection.query(
+    "UPDATE mahasiswa SET nim = ?, nama = ?, jurusan = ? WHERE id = ?",
+    [nim, nama, jurusan, id],
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        respone.ok("ubah data", res);
+      }
+    }
+  );
+};
+
+exports.tampilGroupmat = function (req, res) {
+  connection.query(
+    "SELECT mahasiswa.idMah, mahasiswa.nim, mahasiswa.nama , mat.mat , mat.sks FROM krs JOIN mat JOIN mahasiswa WHERE krs.idMat = mat.idMat AND krs.idMah = mahasiswa.idMah ORDER BY mahasiswa.idMah ",
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        respone.oknested(rows, res);
       }
     }
   );
